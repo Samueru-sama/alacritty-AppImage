@@ -69,9 +69,8 @@ fi
 echo "Building alacritty..."
 echo "---------------------------------------------------------------"
 
-cp -v ./hack.patch ./alacritty && (
+(
 	cd ./alacritty
-	patch -p1 -i ./hack.patch
 	cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
 	CARGO_INCREMENTAL=0 cargo build --release --locked --offline
 	CARGO_INCREMENTAL=0 cargo test --locked --offline
