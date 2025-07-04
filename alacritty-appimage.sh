@@ -35,6 +35,15 @@ rm -rf ./alacritty && (
 	echo 'unset ARGV0' > ./.env
 	ln ./sharun ./AppRun
 	./sharun -g
+
+	git clone https://github.com/xplshn/modEnv.git ./modenv && (
+		cd ./modenv
+		make
+		mv -v ./modEnv.so ../
+	)
+	mv -v ./modEnv.so ./shared/lib
+	echo 'modEnv.so' >> ./.preload
+	rm -rf ./modenv
 )
 
 # MAKE APPIMAGE WITH URUNTIME
