@@ -37,7 +37,6 @@ jobs:
           name: AppImage-${{ matrix.arch }}
           path: |
             dist
-            ~/version
 
   release:
     if: ${{ github.ref_name == 'main' }}
@@ -54,7 +53,6 @@ jobs:
 
       - name: Read version and Get date
         run: |
-          ls -la .
           cat ./version
           echo "VERSION=$(cat ./version)" >> "${GITHUB_ENV}"
           echo "DATE=$(date +'%Y-%m-%d_%s')" >> "${GITHUB_ENV}"
