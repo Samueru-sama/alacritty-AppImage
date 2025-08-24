@@ -22,8 +22,6 @@ jobs:
             name: Build AppImage
             arch: aarch64
     container: ghcr.io/pkgforge-dev/archlinux:latest
-    outputs:
-      VERSION: ${{ steps.version.outputs.VERSION }}
     steps:
       - uses: actions/checkout@v4
 
@@ -33,15 +31,13 @@ jobs:
       - name: Make AppImage
         run: chmod +x ./*-appimage.sh && ./*-appimage.sh
 
-      - name: Read version
-        id: version
-        run: cat ~/version && echo "VERSION=$(cat ~/version)" >> "$GITHUB_OUTPUT"
-
       - name: Upload artifact
         uses: actions/upload-artifact@v4.6.2
         with:
           name: AppImage-${{ matrix.arch }}
-          path: dist
+          path: |
+            dist
+            ~/version
 
   release:
     if: ${{ github.ref_name == 'main' }}
@@ -56,8 +52,11 @@ jobs:
           pattern: AppImage-*
           merge-multiple: true
 
-      - name: Set date
-        run: echo "DATE=$(date +'%Y-%m-%d_%s')" >> "$GITHUB_ENV"
+      - name: Read version and Get date
+        run: |
+          cat ./version
+          echo "VERSION=$(cat ./version)" >> "${GITHUB_ENV}"
+          echo "DATE=$(date +'%Y-%m-%d_%s')" >> "${GITHUB_ENV}"
 
       - name: Release Artifacts
         uses: softprops/action-gh-release@v2.2.2
